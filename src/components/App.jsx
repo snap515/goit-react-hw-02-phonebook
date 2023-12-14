@@ -52,7 +52,7 @@ export class App extends Component {
           <ContactForm onInputChange={this.onInputChange} onSubmit={this.onSubmit}></ContactForm>
         </Section>
         <Section title="Contacts">
-          <Filter filterValue ={this.state.value} onInputChange = {this.onInputChange}></Filter>
+          <Filter filterValue ={this.state.filter} onInputChange = {this.onInputChange}></Filter>
           <ContactList contactsList={filteredContacts} onDeleteContact = {this.onDeleteContact}></ContactList>
         </Section>
       </div>
