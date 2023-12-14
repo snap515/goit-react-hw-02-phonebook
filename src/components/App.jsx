@@ -1,41 +1,62 @@
 import { Component } from "react";
-import { Contacts } from "./Contacts/Contacts";
-// import { Phonebook } from "./Phonebook/Phonebook";
+import { ContactForm } from "./ContactForm/ContactForm";
+import { ContactList } from "./ContactList/ContactList";
+import { Filter } from "./Filter/Filter";
 import { Section } from "./Section/Section";
+import { nanoid } from "nanoid";
+
 export class App extends Component {
   state = {
-    contacts: [],
-    name: ''
+    contacts: [
+      {id: 'id-1', name: 'Rosie Simpson', number: '459-12-56'},
+      {id: 'id-2', name: 'Hermione Kline', number: '443-89-12'},
+      {id: 'id-3', name: 'Eden Clements', number: '645-17-79'},
+      {id: 'id-4', name: 'Annie Copeland', number: '227-91-26'},
+    ],
+    filter: '',
+    name: '',
+    number: ''
   }
+
   onInputChange = e => {
-    console.log(e.target.value)
     this.setState({
       [e.target.name]: e.target.value,
     })
   }
+
   onSubmit = e => {
     e.preventDefault()
-    const newContact = this.state.name;
-    console.log(newContact)
-    this.setState((prevState) => ({ contacts: [...prevState.contacts, this.state.name] }))
+    const alreadyInContacts = this.state.contacts.some(contact => contact.name === this.state.name)
+    if (alreadyInContacts) {
+      alert(`Contact ${this.state.name} is already in List.`)
+      return;
+    }
+
+    const newContact = { id: nanoid(), name: this.state.name, number: this.state.number}
+    this.setState((prevState) => ({ contacts: [...prevState.contacts, newContact] }))
+    e.currentTarget.reset();
+  }
+
+  onDeleteContact = idToDelete => {
+    const isConfirmed = window.confirm('Are you sure want to delete this contact?');
+    if (isConfirmed) {
+      this.setState({contacts: this.state.contacts.filter(contact => contact.id !== idToDelete) })
+    }
+    
   }
 
   render() {
+    const filteredContacts = this.state.contacts.filter(contactEl => contactEl.name.toLowerCase().includes(this.state.filter.trim().toLowerCase()))
     return (
       <div>
         <Section title="Phonebook">
-          <form onSubmit={this.onSubmit}>
-            <label htmlFor="nameInput">Name</label>
-            <input type="text" id="nameInput" name="name" onChange={this.onInputChange} required />               
-            <button type="submit">Add Contact</button>
-          </form>
+          <ContactForm onInputChange={this.onInputChange} onSubmit={this.onSubmit}></ContactForm>
         </Section>
-        
         <Section title="Contacts">
-          <Contacts contactsList={this.state.contacts}></Contacts>
+          <Filter filterValue ={this.state.value} onInputChange = {this.onInputChange}></Filter>
+          <ContactList contactsList={filteredContacts} onDeleteContact = {this.onDeleteContact}></ContactList>
         </Section>
-
-    </div>
+      </div>
       
     )
   }
