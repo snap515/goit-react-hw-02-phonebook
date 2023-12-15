@@ -26,7 +26,7 @@ export class App extends Component {
 
   onSubmit = e => {
     e.preventDefault()
-    const alreadyInContacts = this.state.contacts.some(contact => contact.name === this.state.name)
+    const alreadyInContacts = this.state.contacts.some(contact => contact.name.toLowerCase() === this.state.name.trim().toLowerCase())
     if (alreadyInContacts) {
       alert(`Contact ${this.state.name} is already in List.`)
       return;
